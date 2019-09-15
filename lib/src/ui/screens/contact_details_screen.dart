@@ -41,11 +41,13 @@ class ContactDetailsScreen extends StatelessWidget {
                         .copyWith(fontSize: 24, color: Colors.black87),
                   ),
                   SizedBox(height: 10),
-                  Text(contact.phoneNumber,
-                      style: Theme.of(context)
-                          .textTheme
-                          .display2
-                          .copyWith(fontSize: 20, color: Colors.black26),)
+                  Text(
+                    contact.phoneNumber,
+                    style: Theme.of(context)
+                        .textTheme
+                        .display2
+                        .copyWith(fontSize: 20, color: Colors.black26),
+                  )
                 ],
               ),
             )

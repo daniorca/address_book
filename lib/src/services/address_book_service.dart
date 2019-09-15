@@ -6,6 +6,7 @@ class AddressBook {
   List<Contact> _contacts = [];
   Map<String, List<Contact>> _groupedContacts;
 
+  List<Contact> get contacts => this._contacts;
   Map<String, List<Contact>> get groupedContacts => this._groupedContacts;
 
   final _rawContacts = <String>[
@@ -23,20 +24,20 @@ class AddressBook {
     'Andrew Yao',
   ];
 
-  Future<void> generateAddressBook() async {
+  void generateAddressBook() {
     this
         ._rawContacts
         .sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
 
     this._rawContacts.forEach((c) {
-      int randomNumber = Random().nextInt(50);
+      int randomNumber = Random().nextInt(23);
       this._contacts.add(
             new Contact(
                 contactId: Random().nextInt(5000),
                 contactName: c,
                 contactGroup: c.substring(0, 1).toUpperCase(),
                 phoneNumber: '(506) 8${randomNumber}3-${randomNumber}13',
-                avatar: 'https://i.pravatar.cc/300?img=$randomNumber',
+                avatar: 'assets/images/$randomNumber.jpg',// 'https://i.pravatar.cc/300?img=$randomNumber',
                 isOnline: Random().nextBool()),
           );
     });

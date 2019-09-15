@@ -6,7 +6,7 @@ ThemeData _buildIdaTheme() {
   return ThemeData(
     primaryColor: Colors.purple[700],
     accentColor: Colors.black,
-    canvasColor: Colors.white,// Color(0xffF2F2F2),
+    canvasColor: Colors.white,
     primaryIconTheme: IconThemeData(color: Colors.white),
     backgroundColor: Colors.white,
     textTheme: TextTheme(

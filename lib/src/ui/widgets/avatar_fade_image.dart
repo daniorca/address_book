@@ -9,12 +9,17 @@ class AvatarFadeImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipOval(
-      child: FadeInImage.assetNetwork(
-        placeholder: 'assets/images/spinner.gif',
-        image: imageUrl,
-        fit: BoxFit.contain,
+      child: Image(
+        image: AssetImage(imageUrl),
         width: imageSize,
+        fit: BoxFit.contain,
       ),
+      // FadeInImage.assetNetwork(
+      //   placeholder: 'assets/images/spinner.gif',
+      //   image: imageUrl,
+      //   fit: BoxFit.contain,
+      //   width: imageSize,
+      // ),
     );
   }
 }

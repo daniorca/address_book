@@ -1,7 +1,7 @@
 import 'package:code_challenge/src/models/contact_model.dart';
 import 'package:code_challenge/src/services/address_book_service.dart';
-import 'package:code_challenge/src/ui/screens/contact_details_screen.dart';
-import 'package:code_challenge/src/ui/widgets/avatar_fade_image.dart';
+import 'package:code_challenge/src/services/contact_search_service.dart';
+import 'package:code_challenge/src/ui/widgets/contact_list_tile.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -11,22 +11,39 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   Map<String, List<Contact>> groupedContacts;
+  List<Contact> contacts;
 
   @override
   void initState() {
     super.initState();
+
     final addressBook = AddressBook()..generateAddressBook();
+
     groupedContacts = addressBook.groupedContacts;
+    contacts = addressBook.contacts;
   }
 
   @override
   Widget build(BuildContext context) {
     final _deviceSize = MediaQuery.of(context).size;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Contacts', style: Theme.of(context).textTheme.display3),
         elevation: 0,
         centerTitle: false,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () => setState(() async {
+              await showSearch(context: context, delegate: ContactSearch(contacts));
+            }),
+          ),
+          IconButton(
+            icon: Icon(Icons.more_vert),
+            onPressed: () {},
+          )
+        ],
       ),
       body: Container(
           width: _deviceSize.width,
@@ -55,7 +72,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                 ),
               ),
-              //Spacer(),
               Container(
                 height: _deviceSize.height * .1,
                 color: Colors.grey[200],
@@ -91,26 +107,11 @@ class _HomeScreenState extends State<HomeScreen> {
       itemCount: groupedContacts[headerGroup].length,
       itemBuilder: (BuildContext context, int index) {
         Contact contact = groupedContacts[headerGroup][index];
-        return ListTile(
-          leading: Hero(
-            tag: contact.contactId,
-            child: AvatarFadeImage(imageUrl: contact.avatar, imageSize: 50),
-          ),
-          title: Text(
-            contact.contactName,
-            style: Theme.of(context).textTheme.display1,
-          ),
-          subtitle: Text(
-            contact.phoneNumber,
-            style: Theme.of(context)
-                .textTheme
-                .display1
-                .copyWith(color: Colors.grey[400]),
-          ),
-          onTap: () => Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => ContactDetailsScreen(contact: contact))),
-        );
+        return ContactListTile(contact: contact);
       },
     );
   }
 }
+
+
+
