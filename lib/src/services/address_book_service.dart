@@ -21,16 +21,22 @@ class AddressBook {
     'Robert E. Kahn',
     'Ronald L. Rivest',
     'Vinton G. Cerf',
-    'Andrew Yao',
+    'Andrew Yao'
   ];
 
   void generateAddressBook() {
+
+    //Sort Contacts
     this
         ._rawContacts
         .sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
 
     this._rawContacts.forEach((c) {
+
+      //Random number value
       int randomNumber = Random().nextInt(23);
+
+      //Generates a List of Contacts
       this._contacts.add(
             new Contact(
                 contactId: Random().nextInt(5000),
@@ -38,10 +44,15 @@ class AddressBook {
                 contactGroup: c.substring(0, 1).toUpperCase(),
                 phoneNumber: '(506) 8${randomNumber}3-${randomNumber}13',
                 avatar: 'assets/images/$randomNumber.jpg',// 'https://i.pravatar.cc/300?img=$randomNumber',
-                isOnline: Random().nextBool()),
+                isOnline: Random().nextBool(),
+                emailAddress: '${c.split(" ").join("")}@gmail.com',
+                birthDay: '1981-09-17'),
+                
+
           );
     });
 
+    //Group Contacts by contactGroup field.
     this._groupedContacts =
         _groupBy(this._contacts, (contact) => contact.contactGroup);
   }

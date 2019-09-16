@@ -18,16 +18,24 @@ class ContactSearch extends SearchDelegate<List<Contact>> {
   @override
   Widget buildLeading(BuildContext context) {
     return IconButton(
-      icon: Icon(Icons.arrow_back_ios),
-      onPressed: () {
-        close(context, null);
-      },
-    );
+        icon: Icon(Icons.arrow_back_ios),
+        onPressed: () => close(context, null));
   }
 
   @override
   Widget buildResults(BuildContext context) {
-    return null;
+    final results = contacts.where(
+        (c) => c.contactName.toLowerCase().contains(query.toLowerCase()));
+
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: ClampingScrollPhysics(),
+      itemCount: results.length,
+      itemBuilder: (BuildContext context, int index) {
+        Contact contact = results.elementAt(index);
+        return ContactListTile(contact: contact);
+      },
+    );
   }
 
   @override
@@ -35,10 +43,6 @@ class ContactSearch extends SearchDelegate<List<Contact>> {
     final results = contacts.where(
         (c) => c.contactName.toLowerCase().contains(query.toLowerCase()));
 
-    return _buildContactList(results);
-  }
-
-  ListView _buildContactList(Iterable<Contact> results) {
     return ListView.builder(
       shrinkWrap: true,
       physics: ClampingScrollPhysics(),

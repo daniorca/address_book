@@ -1,8 +1,6 @@
 import 'package:code_challenge/src/models/contact_model.dart';
 import 'package:code_challenge/src/ui/screens/contact_details_screen.dart';
-import 'package:code_challenge/src/ui/widgets/avatar_fade_image.dart';
 import 'package:flutter/material.dart';
-
 
 class ContactListTile extends StatelessWidget {
   const ContactListTile({
@@ -17,7 +15,10 @@ class ContactListTile extends StatelessWidget {
     return ListTile(
       leading: Hero(
         tag: contact.contactId,
-        child: AvatarFadeImage(imageUrl: contact.avatar, imageSize: 50),
+        child: CircleAvatar(
+          radius: 24.0,
+          backgroundImage: AssetImage(contact.avatar),
+        ),
       ),
       title: Text(
         contact.contactName,

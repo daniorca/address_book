@@ -7,6 +7,8 @@ class Contact {
   String phoneNumber;
   String avatar;
   bool isOnline = false;
+  String emailAddress;
+  String birthDay;
 
   Contact(
       {@required this.contactId,
@@ -14,5 +16,7 @@ class Contact {
       @required this.contactGroup,
       @required this.phoneNumber,
       @required this.avatar,
-      this.isOnline});
+      this.isOnline,
+      this.emailAddress,
+      this.birthDay});
 }
