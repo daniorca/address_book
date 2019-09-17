@@ -17,7 +17,7 @@ class ContactListTile extends StatelessWidget {
       dense: true,
       leading: Hero(
         tag: contact.contactId,
-        child: AvatarFadeImage(imageUrl: contact.avatar, imageSize: 50),
+        child: AvatarFadeImage(imageUrl: contact.avatar, imageSize: 48),
       ),
       title: Text(
         contact.contactName,
