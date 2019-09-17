@@ -22,7 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
   ScrollController _scrollController;
   Size _appBarSize;
   Size _onlineContactsSize;
- 
+
   GlobalKey _groupKey = GlobalKey();
   GlobalKey _appBarKey = GlobalKey();
   GlobalKey _onlineContactsKey = GlobalKey();
@@ -79,7 +79,9 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            _buildOnLineContacts(_deviceSize, context),
+            Expanded(
+              child: _buildOnLineContacts(_deviceSize, context),
+            ),
             Expanded(
               flex: 8,
               child: ListView.builder(
@@ -182,69 +184,67 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildOnLineContacts(Size deviceSize, BuildContext context) {
-    return Expanded(
-      child: Material(
-        key: _onlineContactsKey,
-        elevation: 2,
-        child: Container(
-          width: deviceSize.width,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.fromLTRB(8, 2, 0, 0),
-                child: Text('Online',
-                    style: Theme.of(context)
-                        .textTheme
-                        .display1
-                        .copyWith(fontSize: 11, color: Colors.grey[400])),
-              ),
-              Expanded(
-                  child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: contacts
-                    .where((contact) => contact.isOnline)
-                    .map(
-                      (contact) => Padding(
-                        padding: EdgeInsets.only(left: 4.0),
-                        child: GestureDetector(
-                          child: Container(
-                            width: 40,
-                            child: Column(
-                              children: <Widget>[
-                                Hero(
-                                  tag: Random(
-                                      DateTime.now().millisecondsSinceEpoch),
-                                  child: AvatarFadeImage(
-                                      imageUrl: contact.avatar, imageSize: 26),
-                                ),
-                                //SizedBox(height: 1),
-                                Text(
-                                  contact.contactName,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .display1
-                                      .copyWith(
-                                          fontSize: 8, color: Colors.grey[400]),
-                                  overflow: TextOverflow.ellipsis,
-                                  //softWrap: true,
-                                  textAlign: TextAlign.center,
-                                ),
-                              ],
-                            ),
-                          ),
-                          onTap: () => Navigator.of(context).push(
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    ContactDetailsScreen(contact: contact)),
+    return Material(
+      key: _onlineContactsKey,
+      elevation: 2,
+      child: Container(
+        width: deviceSize.width,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(left: 8, top: 2),
+              child: Text('Online',
+                  style: Theme.of(context)
+                      .textTheme
+                      .display1
+                      .copyWith(fontSize: 11, color: Colors.grey[400])),
+            ),
+            Expanded(
+                child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: contacts
+                  .where((contact) => contact.isOnline)
+                  .map(
+                    (contact) => Padding(
+                      padding: EdgeInsets.only(left: 4.0),
+                      child: GestureDetector(
+                        child: Container(
+                          width: 40,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Hero(
+                                tag: Random(
+                                    DateTime.now().millisecondsSinceEpoch),
+                                child: AvatarFadeImage(
+                                    imageUrl: contact.avatar, imageSize: 26),
+                              ),
+                              Text(
+                                contact.contactName,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .display1
+                                    .copyWith(
+                                        fontSize: 8, color: Colors.grey[400]),
+                                overflow: TextOverflow.ellipsis,
+                                //softWrap: true,
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
                           ),
                         ),
+                        onTap: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  ContactDetailsScreen(contact: contact)),
+                        ),
                       ),
-                    )
-                    .toList(),
-              ))
-            ],
-          ),
+                    ),
+                  )
+                  .toList(),
+            ))
+          ],
         ),
       ),
     );
