@@ -4,6 +4,7 @@ import 'package:code_challenge/src/models/contact_model.dart';
 import 'package:code_challenge/src/services/address_book_service.dart';
 import 'package:code_challenge/src/services/contact_search_service.dart';
 import 'package:code_challenge/src/ui/screens/contact_details_screen.dart';
+import 'package:code_challenge/src/ui/widgets/avatar_fade_image.dart';
 import 'package:code_challenge/src/ui/widgets/contact_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:code_challenge/src/ui/widgets/popup_menu.dart' as mypopup;
@@ -16,12 +17,18 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   Map<String, List<Contact>> groupedContacts;
   List<Contact> contacts;
+
   int _currentIndex = 0;
+  ScrollController _scrollController;
+  double initialPositionListView = 175.7;
+
+  GlobalKey _groupKey = GlobalKey();
+  Map<String, GlobalKey> groupsKeys = Map<String, GlobalKey>();
 
   @override
   void initState() {
     super.initState();
-
+    _scrollController = ScrollController();
     final addressBook = AddressBook()..generateAddressBook();
 
     groupedContacts = addressBook.groupedContacts;
@@ -39,43 +46,46 @@ class _HomeScreenState extends State<HomeScreen> {
         centerTitle: false,
         actions: <Widget>[
           IconButton(
-              icon: Icon(Icons.search),
-              onPressed: () {
-                showSearch(context: context, delegate: ContactSearch(contacts));
-              }),
+            icon: Icon(Icons.search),
+            onPressed: () {
+              showSearch(context: context, delegate: ContactSearch(contacts));
+            },
+          ),
           mypopup.PopupMenuButton(
-            onSelected: (selectedValue) {},
+            onSelected: (selectedValue) => _scrolltoGroup(selectedValue),
             icon: Icon(Icons.more_vert),
             itemBuilder: _buildPopupMenu,
           )
         ],
       ),
       body: Container(
-          width: _deviceSize.width,
-          height: _deviceSize.height,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              _buildOnLineContacts(_deviceSize, context),
-              Expanded(
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: groupedContacts.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    String headerGroup = groupedContacts.keys.elementAt(index);
-                    return Padding(
-                        padding: const EdgeInsets.only(bottom: 5, top: 4),
-                        child: Column(
-                          children: <Widget>[
-                            _buildGroupHeader(headerGroup),
-                            _buildContactItem(headerGroup),
-                          ],
-                        ));
-                  },
-                ),
+        width: _deviceSize.width,
+        height: _deviceSize.height,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            _buildOnLineContacts(_deviceSize, context),
+            Expanded(
+              child: ListView.builder(
+                controller: _scrollController,
+                shrinkWrap: true,
+                itemCount: groupedContacts.length,
+                itemBuilder: (BuildContext context, int index) {
+                  String headerGroup = groupedContacts.keys.elementAt(index);
+                  return Padding(
+                      padding: const EdgeInsets.only(bottom: 5, top: 4),
+                      child: Column(
+                        children: <Widget>[
+                          _buildGroupHeader(headerGroup),
+                          _buildContactItem(headerGroup),
+                        ],
+                      ));
+                },
               ),
-            ],
-          )),
+            ),
+          ],
+        ),
+      ),
       bottomNavigationBar: _buildBottomNavigationBar(context),
     );
   }
@@ -106,7 +116,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  List<mypopup.PopupMenuEntry> _buildPopupMenu(BuildContext ctx) {
+  List<mypopup.PopupMenuEntry> _buildPopupMenu(_) {
     List<mypopup.PopupMenuEntry> menu = [];
     groupedContacts.keys.forEach((g) {
       menu.add(mypopup.PopupMenuItem(
@@ -120,7 +130,12 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildGroupHeader(String headerGroup) {
+    _groupKey = GlobalKey();
+    groupsKeys.putIfAbsent(headerGroup, () => _groupKey);
     return Container(
+      key: groupsKeys.containsKey(headerGroup)
+          ? groupsKeys[headerGroup]
+          : _groupKey,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(10)),
         color: Color.fromRGBO(245, 244, 247, 1),
@@ -154,13 +169,13 @@ class _HomeScreenState extends State<HomeScreen> {
     return Material(
       elevation: 2,
       child: Container(
-        height: deviceSize.height * .08,
+        height: deviceSize.height * .080,
         width: deviceSize.width,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.fromLTRB(8, 2, 0, 4),
+              padding: const EdgeInsets.fromLTRB(8, 2, 0, 2),
               child: Text('Online',
                   style: Theme.of(context)
                       .textTheme
@@ -177,24 +192,26 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: EdgeInsets.only(left: 4.0),
                       child: GestureDetector(
                         child: Container(
-                          width: 44,
+                          width: 40,
                           child: Column(
                             children: <Widget>[
                               Hero(
-                                tag: Random(DateTime.now().millisecondsSinceEpoch),
-                                child: CircleAvatar(
-                                  radius: 14.0,
-                                  backgroundImage: AssetImage(contact.avatar),
-                                ),
+                                tag: Random(
+                                    DateTime.now().millisecondsSinceEpoch),
+                                child: AvatarFadeImage(
+                                    imageUrl: contact.avatar, imageSize: 30),
                               ),
-                              SizedBox(height: 6),
-                              Text(contact.contactName,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .display1
-                                      .copyWith(
-                                          fontSize: 9, color: Colors.grey[400]),
-                                  overflow: TextOverflow.ellipsis),
+                              SizedBox(height: 2),
+                              Text(
+                                contact.contactName,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .display1
+                                    .copyWith(
+                                        fontSize: 9, color: Colors.grey[400]),
+                                softWrap: true,
+                                textAlign: TextAlign.center,
+                              ),
                             ],
                           ),
                         ),
@@ -212,5 +229,15 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+
+  void _scrolltoGroup(String selectedValue) {
+    final selectedKey = groupsKeys[selectedValue];
+    final RenderBox renderBox = selectedKey?.currentContext?.findRenderObject();
+    final position = renderBox?.localToGlobal(Offset.zero);
+    if (position != null) {
+      _scrollController.animateTo(position.dy - initialPositionListView,
+          duration: const Duration(milliseconds: 500), curve: Curves.easeOut);
+    }
   }
 }

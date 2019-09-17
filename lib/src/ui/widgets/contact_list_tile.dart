@@ -1,5 +1,6 @@
 import 'package:code_challenge/src/models/contact_model.dart';
 import 'package:code_challenge/src/ui/screens/contact_details_screen.dart';
+import 'package:code_challenge/src/ui/widgets/avatar_fade_image.dart';
 import 'package:flutter/material.dart';
 
 class ContactListTile extends StatelessWidget {
@@ -13,12 +14,10 @@ class ContactListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      dense: true,
       leading: Hero(
         tag: contact.contactId,
-        child: CircleAvatar(
-          radius: 24.0,
-          backgroundImage: AssetImage(contact.avatar),
-        ),
+        child: AvatarFadeImage(imageUrl: contact.avatar, imageSize: 50),
       ),
       title: Text(
         contact.contactName,
@@ -31,8 +30,10 @@ class ContactListTile extends StatelessWidget {
             .display1
             .copyWith(color: Colors.grey[400]),
       ),
-      onTap: () => Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => ContactDetailsScreen(contact: contact))),
+      onTap: () => Navigator.of(context).push(
+        MaterialPageRoute(
+            builder: (context) => ContactDetailsScreen(contact: contact)),
+      ),
     );
   }
 }

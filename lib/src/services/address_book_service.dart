@@ -34,7 +34,7 @@ class AddressBook {
     this._rawContacts.forEach((c) {
 
       //Random number value
-      int randomNumber = Random().nextInt(23);
+      int randomNumber = Random().nextInt(70);
 
       //Generates a List of Contacts
       this._contacts.add(
@@ -43,7 +43,7 @@ class AddressBook {
                 contactName: c,
                 contactGroup: c.substring(0, 1).toUpperCase(),
                 phoneNumber: '(506) 8${randomNumber}3-${randomNumber}13',
-                avatar: 'assets/images/$randomNumber.jpg',// 'https://i.pravatar.cc/300?img=$randomNumber',
+                avatar: 'https://i.pravatar.cc/300?img=$randomNumber',
                 isOnline: Random().nextBool(),
                 emailAddress: '${c.split(" ").join("")}@gmail.com',
                 birthDay: '1981-09-17'),

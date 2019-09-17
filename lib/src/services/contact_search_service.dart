@@ -24,22 +24,15 @@ class ContactSearch extends SearchDelegate<List<Contact>> {
 
   @override
   Widget buildResults(BuildContext context) {
-    final results = contacts.where(
-        (c) => c.contactName.toLowerCase().contains(query.toLowerCase()));
-
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: ClampingScrollPhysics(),
-      itemCount: results.length,
-      itemBuilder: (BuildContext context, int index) {
-        Contact contact = results.elementAt(index);
-        return ContactListTile(contact: contact);
-      },
-    );
+    return _getResults();
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
+    return _getResults();
+  }
+
+  Widget _getResults() {
     final results = contacts.where(
         (c) => c.contactName.toLowerCase().contains(query.toLowerCase()));
 

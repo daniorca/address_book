@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-final ThemeData kTheme = _buildIdaTheme();
+final ThemeData kTheme = _buildTheme();
 
-ThemeData _buildIdaTheme() {
+ThemeData _buildTheme() {
   return ThemeData(
     primaryColor: Colors.purple[700],
     accentColor: Colors.black,

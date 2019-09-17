@@ -1,4 +1,5 @@
 import 'package:code_challenge/src/models/contact_model.dart';
+import 'package:code_challenge/src/ui/widgets/avatar_fade_image.dart';
 import 'package:flutter/material.dart';
 
 class ContactDetailsScreen extends StatelessWidget {
@@ -25,7 +26,6 @@ class ContactDetailsScreen extends StatelessWidget {
                 width: _deviceSize.width,
                 padding: EdgeInsets.all(25),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
@@ -140,11 +140,9 @@ class ContactDetailsScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Hero(
-              tag: contact.contactId,
-              child: CircleAvatar(
-                radius: 64.0,
-                backgroundImage: AssetImage(contact.avatar),
-              )),
+            tag: contact.contactId,
+            child: AvatarFadeImage(imageUrl: contact.avatar, imageSize: 120),
+          ),
           SizedBox(height: 15),
           Text(
             contact.contactName,
