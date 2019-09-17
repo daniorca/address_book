@@ -21,28 +21,34 @@ class ContactDetailsScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              _buildHeader(_deviceSize, context),
-              Container(
-                width: _deviceSize.width,
-                padding: EdgeInsets.all(25),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      'OTHER DETAILS',
-                      style: Theme.of(context)
-                          .textTheme
-                          .display2
-                          .copyWith(color: Colors.grey[400]),
-                      textAlign: TextAlign.left,
-                    ),
-                    SizedBox(height: 20),
-                    _buildPhoneDetails(context),
-                    SizedBox(height: 20),
-                    _buildEmailDetails(context),
-                    SizedBox(height: 20),
-                    _buildBirthDayDetails(context),
-                  ],
+              Expanded(
+                flex: 3,
+                child: _buildHeader(_deviceSize, context),
+              ),
+              Expanded(
+                flex: 4,
+                child: Container(
+                  width: _deviceSize.width,
+                  padding: EdgeInsets.all(25),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        'OTHER DETAILS',
+                        style: Theme.of(context)
+                            .textTheme
+                            .display2
+                            .copyWith(color: Colors.grey[400]),
+                        textAlign: TextAlign.left,
+                      ),
+                      SizedBox(height: 20),
+                      _buildPhoneDetails(context),
+                      SizedBox(height: 20),
+                      _buildEmailDetails(context),
+                      SizedBox(height: 20),
+                      _buildBirthDayDetails(context),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -130,10 +136,9 @@ class ContactDetailsScreen extends StatelessWidget {
     );
   }
 
-  Container _buildHeader(Size _deviceSize, BuildContext context) {
+  Widget _buildHeader(Size _deviceSize, BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 20),
-      height: _deviceSize.height * .28,
+      padding: EdgeInsets.only(top: 20),
       width: _deviceSize.width,
       color: Colors.grey[100],
       child: Column(

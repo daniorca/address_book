@@ -1,6 +1,7 @@
+import 'package:flutter/material.dart';
+
 import 'package:code_challenge/src/models/contact_model.dart';
 import 'package:code_challenge/src/ui/widgets/contact_list_tile.dart';
-import 'package:flutter/material.dart';
 
 class ContactSearch extends SearchDelegate<List<Contact>> {
   final List<Contact> contacts;

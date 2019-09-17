@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:flutter/material.dart';
 
 import 'package:code_challenge/src/models/contact_model.dart';
 import 'package:code_challenge/src/services/address_book_service.dart';
@@ -6,7 +7,6 @@ import 'package:code_challenge/src/services/contact_search_service.dart';
 import 'package:code_challenge/src/ui/screens/contact_details_screen.dart';
 import 'package:code_challenge/src/ui/widgets/avatar_fade_image.dart';
 import 'package:code_challenge/src/ui/widgets/contact_list_tile.dart';
-import 'package:flutter/material.dart';
 import 'package:code_challenge/src/ui/widgets/popup_menu.dart' as mypopup;
 
 class HomeScreen extends StatefulWidget {
@@ -20,19 +20,33 @@ class _HomeScreenState extends State<HomeScreen> {
 
   int _currentIndex = 0;
   ScrollController _scrollController;
-  double initialPositionListView = 175.7;
-
+  Size _appBarSize;
+  Size _onlineContactsSize;
+ 
   GlobalKey _groupKey = GlobalKey();
+  GlobalKey _appBarKey = GlobalKey();
+  GlobalKey _onlineContactsKey = GlobalKey();
   Map<String, GlobalKey> groupsKeys = Map<String, GlobalKey>();
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback(_afterLayout);
     _scrollController = ScrollController();
     final addressBook = AddressBook()..generateAddressBook();
 
     groupedContacts = addressBook.groupedContacts;
     contacts = addressBook.contacts;
+  }
+
+  void _afterLayout(_) {
+    final RenderBox renderBoxAppBar =
+        _appBarKey.currentContext.findRenderObject();
+    _appBarSize = renderBoxAppBar.size;
+
+    final RenderBox renderBoxOnlineContacts =
+        _onlineContactsKey.currentContext.findRenderObject();
+    _onlineContactsSize = renderBoxOnlineContacts.size;
   }
 
   @override
@@ -41,6 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        key: _appBarKey,
         title: Text('Contacts', style: Theme.of(context).textTheme.display3),
         elevation: 0,
         centerTitle: false,
@@ -66,6 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: <Widget>[
             _buildOnLineContacts(_deviceSize, context),
             Expanded(
+              flex: 8,
               child: ListView.builder(
                 controller: _scrollController,
                 shrinkWrap: true,
@@ -166,66 +182,69 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildOnLineContacts(Size deviceSize, BuildContext context) {
-    return Material(
-      elevation: 2,
-      child: Container(
-        height: deviceSize.height * .080,
-        width: deviceSize.width,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.fromLTRB(8, 2, 0, 2),
-              child: Text('Online',
-                  style: Theme.of(context)
-                      .textTheme
-                      .display1
-                      .copyWith(fontSize: 12, color: Colors.grey[400])),
-            ),
-            Expanded(
-                child: ListView(
-              scrollDirection: Axis.horizontal,
-              children: contacts
-                  .where((contact) => contact.isOnline)
-                  .map(
-                    (contact) => Padding(
-                      padding: EdgeInsets.only(left: 4.0),
-                      child: GestureDetector(
-                        child: Container(
-                          width: 40,
-                          child: Column(
-                            children: <Widget>[
-                              Hero(
-                                tag: Random(
-                                    DateTime.now().millisecondsSinceEpoch),
-                                child: AvatarFadeImage(
-                                    imageUrl: contact.avatar, imageSize: 30),
-                              ),
-                              SizedBox(height: 2),
-                              Text(
-                                contact.contactName,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .display1
-                                    .copyWith(
-                                        fontSize: 9, color: Colors.grey[400]),
-                                softWrap: true,
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
+    return Expanded(
+      child: Material(
+        key: _onlineContactsKey,
+        elevation: 2,
+        child: Container(
+          width: deviceSize.width,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.fromLTRB(8, 2, 0, 0),
+                child: Text('Online',
+                    style: Theme.of(context)
+                        .textTheme
+                        .display1
+                        .copyWith(fontSize: 11, color: Colors.grey[400])),
+              ),
+              Expanded(
+                  child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: contacts
+                    .where((contact) => contact.isOnline)
+                    .map(
+                      (contact) => Padding(
+                        padding: EdgeInsets.only(left: 4.0),
+                        child: GestureDetector(
+                          child: Container(
+                            width: 40,
+                            child: Column(
+                              children: <Widget>[
+                                Hero(
+                                  tag: Random(
+                                      DateTime.now().millisecondsSinceEpoch),
+                                  child: AvatarFadeImage(
+                                      imageUrl: contact.avatar, imageSize: 26),
+                                ),
+                                //SizedBox(height: 1),
+                                Text(
+                                  contact.contactName,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .display1
+                                      .copyWith(
+                                          fontSize: 8, color: Colors.grey[400]),
+                                  overflow: TextOverflow.ellipsis,
+                                  //softWrap: true,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          ),
+                          onTap: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    ContactDetailsScreen(contact: contact)),
                           ),
                         ),
-                        onTap: () => Navigator.of(context).push(
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  ContactDetailsScreen(contact: contact)),
-                        ),
                       ),
-                    ),
-                  )
-                  .toList(),
-            ))
-          ],
+                    )
+                    .toList(),
+              ))
+            ],
+          ),
         ),
       ),
     );
@@ -236,8 +255,10 @@ class _HomeScreenState extends State<HomeScreen> {
     final RenderBox renderBox = selectedKey?.currentContext?.findRenderObject();
     final position = renderBox?.localToGlobal(Offset.zero);
     if (position != null) {
-      _scrollController.animateTo(position.dy - initialPositionListView,
-          duration: const Duration(milliseconds: 500), curve: Curves.easeOut);
+      _scrollController.animateTo(
+          position.dy - (_appBarSize.height + _onlineContactsSize.height),
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeOut);
     }
   }
 }
