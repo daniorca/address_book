@@ -1,4 +1,4 @@
-# code_challenge
+# Address Book
 
 <img src="https://github.com/daniorca/challenge/blob/master/screenshots/contacts_1.png" width="250"> <img src="https://github.com/daniorca/challenge/blob/master/screenshots/contacts_2.png" width="250"> <img src="https://github.com/daniorca/challenge/blob/master/screenshots/contacts_3.png" width="250">
 
